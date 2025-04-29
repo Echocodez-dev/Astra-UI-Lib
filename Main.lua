@@ -1,7 +1,7 @@
--- Custom UI Library
+-- Custom UI Library - Rayfield-Like UI
 local UI = {}
 
--- Helper function to create rounded corners
+-- Helper function to create rounded frames
 local function createRoundedFrame(parent, size, position, color, cornerRadius)
     local frame = Instance.new("Frame")
     frame.Parent = parent
@@ -18,7 +18,7 @@ local function createRoundedFrame(parent, size, position, color, cornerRadius)
     return frame
 end
 
--- Helper function to create a button with an icon
+-- Helper function to create buttons with icons (uses Roblox asset icons)
 local function createButtonWithIcon(parent, size, position, text, iconID, callback)
     local button = Instance.new("TextButton")
     button.Parent = parent
@@ -26,7 +26,7 @@ local function createButtonWithIcon(parent, size, position, text, iconID, callba
     button.Position = position
     button.Text = text
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     button.TextScaled = true
     button.Font = Enum.Font.Gotham
     button.TextButton1Click:Connect(callback)
@@ -45,15 +45,25 @@ local function createButtonWithIcon(parent, size, position, text, iconID, callba
     return button
 end
 
--- Initialize the Library
+-- Helper function to create smooth transitions (UI animations)
+local function smoothTransition(element, property, goal, duration)
+    local tweenService = game:GetService("TweenService")
+    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+    local goalProperties = {[property] = goal}
+    local tween = tweenService:Create(element, tweenInfo, goalProperties)
+    tween:Play()
+end
+
+-- Create window with custom title and animations
 function UI:CreateWindow(title)
     local window = Instance.new("ScreenGui")
     window.Name = title
     window.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
     window.ResetOnSpawn = false
 
-    local frame = createRoundedFrame(window, UDim2.new(0, 500, 0, 400), UDim2.new(0.5, -250, 0.5, -200), Color3.fromRGB(34, 34, 34), 20)
-
+    local frame = createRoundedFrame(window, UDim2.new(0, 500, 0, 400), UDim2.new(0.5, -250, 0.5, -200), Color3.fromRGB(28, 28, 28), 18)
+    
+    -- Title label
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Parent = frame
     titleLabel.Text = title
@@ -64,14 +74,17 @@ function UI:CreateWindow(title)
     titleLabel.TextTransparency = 0.1
     titleLabel.BorderSizePixel = 0
 
-    -- Create a sample button with a custom icon (Roblox asset for now)
+    -- Animation for window opening
+    smoothTransition(frame, "Position", UDim2.new(0.5, -250, 0.5, -200), 0.3)
+
+    -- Create a button with an icon (Roblox asset for now)
     local button = createButtonWithIcon(frame, UDim2.new(0, 200, 0, 50), UDim2.new(0.5, -100, 0.5, 0), "Sample Button", "rbxassetid://6031071050", function()
         print("Button Clicked!")
     end)
 
-    -- Create a slider
-    local sliderFrame = createRoundedFrame(frame, UDim2.new(0, 400, 0, 40), UDim2.new(0.5, -200, 0.8, 0), Color3.fromRGB(40, 40, 40), 10)
-
+    -- Create a slider (volume control, for example)
+    local sliderFrame = createRoundedFrame(frame, UDim2.new(0, 400, 0, 40), UDim2.new(0.5, -200, 0.8, 0), Color3.fromRGB(50, 50, 50), 10)
+    
     local sliderLabel = Instance.new("TextLabel")
     sliderLabel.Parent = sliderFrame
     sliderLabel.Text = "Volume"
